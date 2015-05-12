@@ -1,3 +1,10 @@
+.DS_Store
+dist/*.jar
+libs/*
+
+*.iml
+.idea/*
+
 tmp
 bin
 build
