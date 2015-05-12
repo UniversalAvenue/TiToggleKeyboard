@@ -16,17 +16,14 @@ import org.appcelerator.kroll.common.Log;
 
 import android.content.Context;
 import android.view.inputmethod.InputMethodManager;
+import org.appcelerator.titanium.proxy.TiViewProxy;
 
 @Kroll.module(name="Titogglekeyboard", id="be.k0suke.titogglekeyboard")
 public class TitogglekeyboardModule extends KrollModule
 {
-
 	// Standard Debugging variables
 	private static final String TAG = "TitogglekeyboardModule";
 
-	// You can define constants with @Kroll.constant, for example:
-	// @Kroll.constant public static final String EXTERNAL_NAME = value;
-	
 	public TitogglekeyboardModule()
 	{
 		super();
@@ -41,36 +38,43 @@ public class TitogglekeyboardModule extends KrollModule
 
 	// Methods
 	@Kroll.method
-	public String show()
+	public void show()
 	{
 		Context context = TiApplication.getInstance().getApplicationContext();
 		InputMethodManager manager = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
 		manager.toggleSoftInput(1, InputMethodManager.SHOW_IMPLICIT);
-
-		return "show";
 	}
 
 	@Kroll.method
-	public String hide()
+	public void hide()
 	{
 		Context context = TiApplication.getInstance().getApplicationContext();
 		InputMethodManager manager = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
 		manager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
-
-		return "hidde";
 	}
 
 	@Kroll.method
-	public String toggle()
+	public void hideForView(TiViewProxy proxy)
+	{
+		if (proxy.peekView() != null) {
+			Context context = TiApplication.getInstance().getApplicationContext();
+			InputMethodManager manager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+
+			manager.hideSoftInputFromWindow(proxy.peekView().getNativeView().getWindowToken(), 0);
+		}
+	}
+
+	@Kroll.method
+	public Boolean toggle()
 	{
 		Context context = TiApplication.getInstance().getApplicationContext();
 		InputMethodManager manager = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
 		if (manager.isActive()) {
 			manager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+			return false;
 		} else {
 			manager.toggleSoftInput(1, InputMethodManager.SHOW_IMPLICIT);
+			return true;
 		}
-
-		return "toggle";
 	}
 }
